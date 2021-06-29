@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Configurar redux de forma facil",
   "main": "src/index.js",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-redux": "^7.2.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
