@@ -1,0 +1,26 @@
+{
+  "name": "easy-redux",
+  "version": "1.0.0",
+  "description": "Configurar redux de forma facil",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucasPedroso/easy-redux.git"
+  },
+  "keywords": [
+    "easy",
+    "redux",
+    "easy-redux",
+    "easyredux",
+    "lucaspedroso25"
+  ],
+  "author": "Lucas Eduardo Pedroso <lepsk8@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LucasPedroso/easy-redux/issues"
+  },
+  "homepage": "https://github.com/LucasPedroso/easy-redux#readme"
+}
