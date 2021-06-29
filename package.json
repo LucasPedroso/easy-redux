@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LucasPedroso/easy-redux.git"
+    "url": "https://github.com/LucasPedroso/easy-redux.git"
   },
   "keywords": [
     "easy",
