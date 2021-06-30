@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { useStore, useDispatch, useSelector } from 'react-redux';
-// import store from '../store';
+import { useDispatch, useSelector } from 'react-redux';
 
 function actionCreator() {
   const state = {
@@ -66,17 +65,11 @@ function EasyRedux(component, initialState, hasPermission = [component.name]) { 
   const stateClass = initialState.state;
   const stateHook = initialState;
   const state = stateClass || stateHook;
-  // const store = useStore();
-  // const dispatch = useDispatch();
-  // const useThunkDispatch = () => useDispatch();
 
   return {
     componentName,
     state,
     hasPermission,
-    // store,
-    // dispatch,
-    // useThunkDispatch,
     // extra functions
     // easyReduxDispatchToProps,
     setStateInRedux,
@@ -85,18 +78,26 @@ function EasyRedux(component, initialState, hasPermission = [component.name]) { 
   };
 }
 
+export default EasyRedux;
+
 const optionsDefault = {
-  combineReducer: false,
+  // todo options
+  combineReducers: false, // Sem efeito por enquanto
+  // Caso usou combineReducers, coloque o nome que escolheu para este reducer
   nameReducer: undefined,
-}
+};
 
 export const useStateEasyRedux = (clazz, initialState, options = optionsDefault) => {
-  const [state, setState] = useState(initialState);
+  const optSelector = (stt) => (
+    options.nameReducer ? stt[options.nameReducer][clazz.name] : stt[clazz.name]
+  );
+  const selector = useSelector((stt) => optSelector(stt));
+  const stateDefault = useMemo(() => (selector || initialState), [selector]);
+
+  const [state, setState] = useState(stateDefault);
 
   const ref = useRef();
   const dispatch = useDispatch();
-  // const useThunkDispatch = () => useDispatch();
-  // const selector = useSelector((stt) => stt.cpnt[clazz.name]);
 
   const setLegacyState = useCallback((stt, fnCb) => {
     ref.current = fnCb;
@@ -113,21 +114,11 @@ export const useStateEasyRedux = (clazz, initialState, options = optionsDefault)
 
   const stateRedux = useMemo(() => new EasyRedux(clazz, state), [state]);
 
-  const optSelector = (stt) => (
-    options.nameReducer 
-      ? stt[options.nameReducer][stateRedux.componentName]
-      : stt[stateRedux.componentName]
-  );
-  const getStateRedux = useSelector((stt) => optSelector(stt));
-
   useEffect(() => {
     dispatch(stateRedux.action());
-    // stateRedux.dispatch(stateRedux.action());
     if (typeof ref.current === 'function') ref.current(state);
     ref.current = null;
   }, [state]);
 
-  return [state, setLegacyState, stateRedux, getStateRedux];
+  return [state, setLegacyState, stateRedux, selector];
 };
-
-export default EasyRedux;
