@@ -1,6 +1,6 @@
 {
   "name": "easy-redux-trybe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Configurar redux de forma facil",
   "main": "src/index.js",
   "dependencies": {
