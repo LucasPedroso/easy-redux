@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function actionCreator() {
+  console.log('entrou na ACTION CREATOR');
   const state = {
     componentName: this.componentName,
     state: this.state,
@@ -14,6 +15,7 @@ function actionCreator() {
     type,
     payload: state,
   };
+  console.log(result);
   return result;
 }
 
@@ -34,8 +36,8 @@ export function reducer(state = {}, { type, payload }) {
   case actionSetStateClass(payload):
   case actionX(payload):
     if (payload.hasPermission.includes(payload.componentName)) {
-      // todo
     }
+    console.log(payload.componentName, payload.componentName, payload.hasPermission);
     return {
       ...state,
       [payload.componentName]: {
@@ -60,7 +62,6 @@ export const easyReduxDispatchToProps = (dispatchToProps) => ({
 });
 
 function EasyRedux(component, initialState, hasPermission = [component.name]) { //  = [clazz.name]
-  console.log(hasPermission)
   const componentName = component.name;
   const stateClass = initialState.state;
   const stateHook = initialState;
@@ -70,8 +71,6 @@ function EasyRedux(component, initialState, hasPermission = [component.name]) { 
     componentName,
     state,
     hasPermission,
-    // extra functions
-    // easyReduxDispatchToProps,
     setStateInRedux,
     reducer,
     action: actionCreator,
@@ -82,17 +81,19 @@ export default EasyRedux;
 
 const optionsDefault = {
   // todo options
-  combineReducers: false, // Sem efeito por enquanto
-  // Caso usou combineReducers, coloque o nome que escolheu para este reducer
+  combineReducers: false,
   nameReducer: undefined,
 };
 
 export const useStateEasyRedux = (clazz, initialState, options = optionsDefault) => {
-  const optSelector = (stt) => (
-    options.nameReducer ? stt[options.nameReducer][clazz.name] : stt[clazz.name]
-  );
+  const optSelector = (stt) => {
+    if (options.nameReducer) console.log('108', stt[options.nameReducer][clazz.name]);
+    return options.nameReducer ? stt[options.nameReducer][clazz.name] : stt[clazz.name];
+  };
   const selector = useSelector((stt) => optSelector(stt));
-  const stateDefault = useMemo(() => (selector || initialState), [selector]);
+  const stateDefault = useMemo(
+    () => (selector || initialState), [selector, initialState],
+  );
 
   const [state, setState] = useState(stateDefault);
 
@@ -112,7 +113,7 @@ export const useStateEasyRedux = (clazz, initialState, options = optionsDefault)
     setState((os) => ({ ...os, [stt]: stt }));
   }, [setState]);
 
-  const stateRedux = useMemo(() => new EasyRedux(clazz, state), [state]);
+  const stateRedux = useMemo(() => new EasyRedux(clazz, state), [state, clazz]);
 
   useEffect(() => {
     dispatch(stateRedux.action());
@@ -121,4 +122,45 @@ export const useStateEasyRedux = (clazz, initialState, options = optionsDefault)
   }, [state]);
 
   return [state, setLegacyState, stateRedux, selector];
+};
+
+/**
+ * Inject state in callback
+ * (state) => { }
+ *
+ * const [state, setState] = useState({ count: 0 });
+ *
+ * Ex: setState({ count: 1 }, (state) => { console.log(state.count) });
+ * // 1
+ * @param {any} initialState
+ * @returns {Array} [state, setState]
+ *
+ *
+ * @author Lucas Eduardo Pedroso
+ * @version 0.1.0
+ */
+export const useClassState = (initialState) => {
+  const [state, setState] = useState(initialState);
+
+  const ref = useRef();
+
+  const setLegacyState = useCallback((stt, fnCb) => {
+    ref.current = fnCb;
+    if (typeof stt === 'function') {
+      setState((prevState) => ({ ...prevState, ...stt(prevState) }));
+      return;
+    }
+    if (typeof stt === 'object' && !Array.isArray(stt)) {
+      setState((prevState) => ({ ...prevState, ...stt }));
+      return;
+    }
+    setState((prevState) => ({ ...prevState, [stt]: stt }));
+  }, []);
+
+  useEffect(() => {
+    if (typeof ref.current === 'function') ref.current(state);
+    ref.current = null;
+  }, [state]);
+
+  return [state, setLegacyState];
 };
