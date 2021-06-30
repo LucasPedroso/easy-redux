@@ -1,5 +1,5 @@
 {
-  "name": "easy-redux",
+  "name": "easy-redux-trybe",
   "version": "1.0.0",
   "description": "Configurar redux de forma facil",
   "main": "src/index.js",
