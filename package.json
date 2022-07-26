@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "dependencies": {
     "react": "^16.12.0",
-    "react-redux": "^7.2.0"
+    "react-redux": "^7.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,6 +21,10 @@
     "redux",
     "easy-redux",
     "easyredux",
+    "reduxeasy",
+    "redux-easy",
+    "useStateGlobalRedux",
+    "useStateGlobal",
     "lucaspedroso25"
   ],
   "author": "Lucas Eduardo Pedroso <lepsk8@gmail.com>",
