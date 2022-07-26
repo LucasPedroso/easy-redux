@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function actionCreator() {
-  console.log('entrou na ACTION CREATOR');
   const state = {
     componentName: this.componentName,
     state: this.state,
@@ -15,7 +14,6 @@ function actionCreator() {
     type,
     payload: state,
   };
-  console.log(result);
   return result;
 }
 
@@ -46,7 +44,6 @@ export function reducer(state = {}, { type, payload }) {
       },
     };
   case 'ERROR':
-    console.error('Não foi possível criar a action');
     return state;
   default:
     return state;
@@ -87,7 +84,6 @@ const optionsDefault = {
 
 export const useStateEasyRedux = (clazz, initialState, options = optionsDefault) => {
   const optSelector = (stt) => {
-    if (options.nameReducer) console.log('108', stt[options.nameReducer][clazz.name]);
     return options.nameReducer ? stt[options.nameReducer][clazz.name] : stt[clazz.name];
   };
   const selector = useSelector((stt) => optSelector(stt));
